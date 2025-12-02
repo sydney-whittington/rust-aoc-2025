@@ -39,10 +39,10 @@ pub fn part_one(input: &str) -> Option<u64> {
     for turn in turns.iter() {
         match turn {
             Turn::R(n) => {
-                dial.rotate_right(*n%100);
+                dial.rotate_right(*n % 100); // wrap around at 100
             }
             Turn::L(n) => {
-                dial.rotate_left(*n%100);
+                dial.rotate_left(*n % 100);
             }
         }
 
@@ -54,8 +54,35 @@ pub fn part_one(input: &str) -> Option<u64> {
     Some(password)
 }
 
-pub fn part_two(_input: &str) -> Option<u64> {
-    None
+pub fn part_two(input: &str) -> Option<u64> {
+    let (_, turns) = parser(input).unwrap();
+
+    let mut dial = VecDeque::from_iter(0..100);
+    dial.rotate_left(50); // initial position per the spec
+    let mut password = 0;
+
+    for turn in turns.iter() {
+        match turn {
+            Turn::R(n) => {
+                for _ in 0..*n {
+                    dial.rotate_right(1);
+                    if dial.front() == Some(&0) {
+                        password += 1;
+                    }
+                }
+            }
+            Turn::L(n) => {
+                for _ in 0..*n {
+                    dial.rotate_left(1);
+                    if dial.front() == Some(&0) {
+                        password += 1;
+                    }
+                }
+            }
+        }
+    }
+
+    Some(password)
 }
 
 #[cfg(test)]
@@ -71,6 +98,6 @@ mod tests {
     #[test]
     fn test_part_two() {
         let result = part_two(&advent_of_code::template::read_file("examples", DAY));
-        assert_eq!(result, None);
+        assert_eq!(result, Some(6));
     }
 }
