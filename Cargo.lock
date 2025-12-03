@@ -23,6 +23,7 @@ version = "0.12.0"
 dependencies = [
  "chrono",
  "dhat",
+ "iter-first-max",
  "itertools",
  "nom",
  "pico-args",
@@ -162,6 +163,12 @@ checksum = "f31827a206f56af32e590ba56d5d2d085f558508192593743f16b2306495269f"
 dependencies = [
  "cc",
 ]
+
+[[package]]
+name = "iter-first-max"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "42ace18d32276b4ce7d8261c06b376398a4ea82e4715a5b37e46fddbff41a617"
 
 [[package]]
 name = "itertools"
