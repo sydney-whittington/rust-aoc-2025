@@ -1,16 +1,10 @@
-use std::{collections::HashMap, vec};
+use std::{collections::HashSet, vec};
 
 use advent_of_code::Coordinate;
 
 advent_of_code::solution!(4);
 
-#[derive(Debug, PartialEq, Eq, Hash, Clone, Copy)]
-enum Warehouse {
-    Empty,
-    Paper,
-}
-
-type Region = HashMap<Coordinate<i32>, Warehouse>;
+type Region = HashSet<Coordinate<i32>>;
 
 const ADJACENTS: [(i32, i32); 8] = [
     (-1, 0),
@@ -29,18 +23,14 @@ fn parse_region(i: &str) -> Region {
         for (left, character) in line.chars().enumerate() {
             match character {
                 '@' => {
-                    region.insert(
-                        Coordinate {
-                            left: left as i32,
-                            top: top as i32,
-                        },
-                        Warehouse::Paper,
-                    );
+                    region.insert(Coordinate {
+                        left: left as i32,
+                        top: top as i32,
+                    });
                 }
                 '.' => {
                     // don't actually need to store empty ones if we're not referencing them directly
                     continue;
-                    // region.insert(Coordinate { left: left as i32, top: top as i32 }, Warehouse::Empty);
                 }
                 _ => {
                     panic!("unexpected character");
@@ -59,15 +49,15 @@ fn get_open_paper_rolls(region: &Region) -> Vec<Coordinate<i32>> {
         let mut adjacent = 0;
         for (left, top) in ADJACENTS.iter() {
             let adjacent_coordinate = Coordinate {
-                left: paper.0.left + left,
-                top: paper.0.top + top,
+                left: paper.left + left,
+                top: paper.top + top,
             };
             if region.get(&adjacent_coordinate).is_some() {
                 adjacent += 1;
             }
         }
         if adjacent < 4 {
-            open.push(*paper.0);
+            open.push(*paper);
         }
     }
 
@@ -82,7 +72,6 @@ pub fn part_one(input: &str) -> Option<u64> {
 
 pub fn part_two(input: &str) -> Option<u64> {
     let mut region = parse_region(input);
-
     let mut removed = 0;
 
     loop {
